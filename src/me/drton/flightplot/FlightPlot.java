@@ -19,6 +19,7 @@ import org.jfree.chart.event.ChartChangeEventType;
 import org.jfree.chart.event.ChartChangeListener;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.Range;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -411,6 +412,9 @@ public class FlightPlot {
         plot.setBackgroundPaint(Color.WHITE);
         plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
         plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+
+        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        plot.setRenderer(renderer);
 
         // Domain (X) axis - seconds
         domainAxisSeconds = new NumberAxis("T") {
