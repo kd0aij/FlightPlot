@@ -34,6 +34,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Ellipse2D;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.text.NumberFormat;
@@ -914,15 +915,12 @@ public class FlightPlot {
 
     private void setChartMarkers() {
         if (dataset.getSeriesCount() > 0) {
-            for (int i = 0; i < processorsListModel.size(); i++) {
-                for (Map.Entry<String, Integer> entry : seriesIndex.get(i).entrySet()) {
-                    ProcessorPreset processorPreset = (ProcessorPreset) processorsListModel.get(i);
-                    Object renderer = jFreeChart.getXYPlot().getRendererForDataset(dataset);
-                    if (renderer instanceof XYLineAndShapeRenderer) {
-                        for (int j = 0; j<dataset.getSeriesCount(); j++) {
-                            ((XYLineAndShapeRenderer) renderer).setSeriesShapesVisible(j, markerCheckBox.isSelected());
-                        }
-                    }
+            Shape marker = new Ellipse2D.Double(-1.5,-1.5,3,3);
+            Object renderer = jFreeChart.getXYPlot().getRendererForDataset(dataset);
+            if (renderer instanceof XYLineAndShapeRenderer) {
+                for (int j = 0; j<dataset.getSeriesCount(); j++) {
+                    ((XYLineAndShapeRenderer) renderer).setSeriesShape(j, marker);
+                    ((XYLineAndShapeRenderer) renderer).setSeriesShapesVisible(j, markerCheckBox.isSelected());
                 }
             }
         }
