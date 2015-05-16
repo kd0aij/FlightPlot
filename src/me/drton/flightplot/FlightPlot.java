@@ -81,6 +81,7 @@ public class FlightPlot {
     private JButton deletePresetButton;
     private JButton logInfoButton;
     private JCheckBox markerCheckBox;
+    private JButton dispButton;
     private JRadioButtonMenuItem[] timeModeItems;
     private LogReader logReader = null;
     private XYSeriesCollection dataset;
@@ -195,6 +196,18 @@ public class FlightPlot {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() > 1) {
                     showAddProcessorDialog(true);
+                } else if (e.getButton() == 3) {
+                    ProcessorPreset selectedProcessor = (ProcessorPreset) processorsList.getSelectedValue();
+                    if (selectedProcessor != null) {
+                        selectedProcessor.setVisible(!selectedProcessor.isVisible());
+                        try {
+                            generateSeries();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        } catch (FormatErrorException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
                 }
             }
         });
@@ -239,6 +252,22 @@ public class FlightPlot {
                     e.printStackTrace();
                 } catch (FormatErrorException e) {
                     e.printStackTrace();
+                }
+            }
+        });
+        dispButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                ProcessorPreset selectedProcessor = (ProcessorPreset) processorsList.getSelectedValue();
+                if (selectedProcessor != null) {
+                    selectedProcessor.setVisible(!selectedProcessor.isVisible());
+                    try {
+                        generateSeries();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    } catch (FormatErrorException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         });
@@ -477,6 +506,8 @@ public class FlightPlot {
         // Processors list
         processorsListModel = new DefaultListModel();
         processorsList = new JList(processorsListModel);
+        processorsList.setCellRenderer(new plotListCellRenderer());
+
         // Parameters table
         parametersTableModel = new DefaultTableModel() {
             @Override
@@ -908,6 +939,7 @@ public class FlightPlot {
                 for (Map.Entry<String, Integer> entry : seriesIndex.get(i).entrySet()) {
                     ProcessorPreset processorPreset = (ProcessorPreset) processorsListModel.get(i);
                     jFreeChart.getXYPlot().getRendererForDataset(dataset).setSeriesPaint(entry.getValue(), processorPreset.getColors().get(entry.getKey()));
+                    jFreeChart.getXYPlot().getRendererForDataset(dataset).setSeriesVisible(entry.getValue(), processorPreset.isVisible());
                 }
             }
         }
@@ -915,10 +947,10 @@ public class FlightPlot {
 
     private void setChartMarkers() {
         if (dataset.getSeriesCount() > 0) {
-            Shape marker = new Ellipse2D.Double(-1.5,-1.5,3,3);
+            Shape marker = new Ellipse2D.Double(-1.5, -1.5, 3, 3);
             Object renderer = jFreeChart.getXYPlot().getRendererForDataset(dataset);
             if (renderer instanceof XYLineAndShapeRenderer) {
-                for (int j = 0; j<dataset.getSeriesCount(); j++) {
+                for (int j = 0; j < dataset.getSeriesCount(); j++) {
                     ((XYLineAndShapeRenderer) renderer).setSeriesShape(j, marker);
                     ((XYLineAndShapeRenderer) renderer).setSeriesShapesVisible(j, markerCheckBox.isSelected());
                 }

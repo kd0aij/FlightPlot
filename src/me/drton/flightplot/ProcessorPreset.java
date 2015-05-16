@@ -16,6 +16,7 @@ public class ProcessorPreset {
     private String processorType;
     private Map<String, Object> parameters;
     private Map<String, Color> colors;
+    private boolean visible = true;
 
     public ProcessorPreset(String title, String processorType, Map<String, Object> parameters, Map<String, Color> colors) {
         this.title = title;
@@ -70,6 +71,14 @@ public class ProcessorPreset {
 
     public void setColors(Map<String, Color> colors) {
         this.colors = colors;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public JSONObject packJSONObject() throws IOException {
