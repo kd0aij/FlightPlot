@@ -79,6 +79,7 @@ public class FlightPlot {
     private JComboBox presetComboBox;
     private JButton deletePresetButton;
     private JButton logInfoButton;
+    private JCheckBox markerCheckBox;
     private JRadioButtonMenuItem[] timeModeItems;
     private LogReader logReader = null;
     private XYSeriesCollection dataset;
@@ -226,6 +227,20 @@ public class FlightPlot {
             }
         });
         mainFrame.setVisible(true);
+        markerCheckBox.addComponentListener(new ComponentAdapter() {
+        });
+        markerCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    generateSeries();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (FormatErrorException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public static void main(String[] args)
@@ -413,7 +428,7 @@ public class FlightPlot {
         plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
         plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
 
-        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, false);
         plot.setRenderer(renderer);
 
         // Domain (X) axis - seconds
@@ -881,6 +896,7 @@ public class FlightPlot {
                 }
             }
             setChartColors();
+            setChartMarkers();
         }
         chartPanel.repaint();
     }
@@ -891,6 +907,22 @@ public class FlightPlot {
                 for (Map.Entry<String, Integer> entry : seriesIndex.get(i).entrySet()) {
                     ProcessorPreset processorPreset = (ProcessorPreset) processorsListModel.get(i);
                     jFreeChart.getXYPlot().getRendererForDataset(dataset).setSeriesPaint(entry.getValue(), processorPreset.getColors().get(entry.getKey()));
+                }
+            }
+        }
+    }
+
+    private void setChartMarkers() {
+        if (dataset.getSeriesCount() > 0) {
+            for (int i = 0; i < processorsListModel.size(); i++) {
+                for (Map.Entry<String, Integer> entry : seriesIndex.get(i).entrySet()) {
+                    ProcessorPreset processorPreset = (ProcessorPreset) processorsListModel.get(i);
+                    Object renderer = jFreeChart.getXYPlot().getRendererForDataset(dataset);
+                    if (renderer instanceof XYLineAndShapeRenderer) {
+                        for (int j = 0; j<dataset.getSeriesCount(); j++) {
+                            ((XYLineAndShapeRenderer) renderer).setSeriesShapesVisible(j, markerCheckBox.isSelected());
+                        }
+                    }
                 }
             }
         }
