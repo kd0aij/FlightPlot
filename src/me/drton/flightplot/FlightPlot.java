@@ -282,8 +282,7 @@ public class FlightPlot {
                     System.setProperty("apple.laf.useScreenMenuBar", "true");
                 }
                 try {
-//                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (Exception e) {
                     e.printStackTrace();
                     return;
