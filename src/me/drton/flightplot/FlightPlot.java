@@ -931,9 +931,13 @@ public class FlightPlot {
                     XYSeries jseries = new XYSeries(series.getFullTitle(processorTitle), false);
                     for (XYPoint point : series) {
                         if (java.lang.Double.isNaN(point.y)) {
-                            System.out.println("NaN in series " + series.getFullTitle(processorTitle));
+                            series.hasNaNs++;
                         }
                         jseries.add(point.x * timeScale, point.y);
+                    }
+                    if (series.hasNaNs > 0) {
+                        jseries.setKey(series.getFullTitle(processorTitle));
+                        System.out.println("NaN Warning: " + jseries.getDescription());
                     }
                     dataset.addSeries(jseries);
                 }
