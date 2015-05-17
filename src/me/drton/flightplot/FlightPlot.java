@@ -26,6 +26,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -249,9 +252,7 @@ public class FlightPlot {
                 try {
                     generateSeries();
                 } catch (IOException e) {
-                    e.printStackTrace();
                 } catch (FormatErrorException e) {
-                    e.printStackTrace();
                 }
             }
         });
@@ -264,9 +265,7 @@ public class FlightPlot {
                     try {
                         generateSeries();
                     } catch (IOException e1) {
-                        e1.printStackTrace();
                     } catch (FormatErrorException e1) {
-                        e1.printStackTrace();
                     }
                 }
             }
@@ -318,6 +317,7 @@ public class FlightPlot {
         if ("comboBoxEdited".equals(e.getActionCommand())) {
             // Save preset
             String presetTitle = presetComboBox.getSelectedItem().toString();
+            System.out.println("comboBoxEdited: save selectedItem: " + presetTitle);
             if (presetTitle.isEmpty()) {
                 return;
             }
@@ -326,6 +326,7 @@ public class FlightPlot {
             for (int i = 0; i < presetComboBox.getItemCount(); i++) {
                 if (presetTitle.equals(presetComboBox.getItemAt(i).toString())) {
                     // Update existing preset
+                    System.out.println("comboBoxEdited:  Update existing preset: " + presetTitle);
                     addNew = false;
                     presetComboBox.removeItemAt(i);
                     presetComboBox.insertItemAt(preset, i);
@@ -341,11 +342,13 @@ public class FlightPlot {
         } else if ("comboBoxChanged".equals(e.getActionCommand())) {
             // Load preset
             Object selection = presetComboBox.getSelectedItem();
+            System.out.println("comboBoxChanged: load selectedItem: " + selection.toString());
             if ("".equals(selection)) {
                 processorsListModel.clear();
                 updateUsedColors();
             }
             if (selection instanceof Preset) {
+                System.out.println("loadPreset: " + selection.toString());
                 loadPreset((Preset) selection);
             }
             updatePresetEdited(false);
@@ -752,6 +755,7 @@ public class FlightPlot {
                 Preset preset = Preset.unpackJSONObject(new JSONObject(new String(b, Charset.forName("utf8"))));
                 loadPreset(preset);
                 processFile();
+                presetComboBox.addItem(file.getAbsolutePath());
             } catch (Exception e) {
                 setStatus("Error: " + e);
                 e.printStackTrace();
@@ -922,6 +926,9 @@ public class FlightPlot {
                     processorSeriesIndex.put(series.getTitle(), dataset.getSeriesCount());
                     XYSeries jseries = new XYSeries(series.getFullTitle(processorTitle), false);
                     for (XYPoint point : series) {
+                        if (java.lang.Double.isNaN(point.y)) {
+                            System.out.println("NaN in series " + series.getFullTitle(processorTitle));
+                        }
                         jseries.add(point.x * timeScale, point.y);
                     }
                     dataset.addSeries(jseries);
