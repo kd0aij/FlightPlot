@@ -729,6 +729,11 @@ public class FlightPlot {
                 Preset preset = Preset.unpackJSONObject(new JSONObject(new String(b, Charset.forName("utf8"))));
                 loadPreset(preset);
                 processFile();
+                if (preset.getTitle().equals("")) {
+                    // generate a namestring
+                    preset.setTitle(file.getName().substring(0, file.getName().indexOf(".fplot")));
+                }
+                presetComboBox.addItem(preset);
             } catch (Exception e) {
                 setStatus("Error: " + e);
                 e.printStackTrace();

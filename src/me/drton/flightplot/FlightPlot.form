@@ -204,6 +204,7 @@
             <constraints/>
             <properties>
               <editable value="true"/>
+              <toolTipText value="enter name here to save current plot as a preset"/>
             </properties>
           </component>
           <component id="2506a" class="javax.swing.JButton" binding="deletePresetButton" default-binding="true">
