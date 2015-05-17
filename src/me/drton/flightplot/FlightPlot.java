@@ -906,7 +906,15 @@ public class FlightPlot {
                     processorSeriesIndex.put(series.getTitle(), dataset.getSeriesCount());
                     XYSeries jseries = new XYSeries(series.getFullTitle(processorTitle), false);
                     for (XYPoint point : series) {
+			// check for NaN y values and display count in plot legend
+                        if (java.lang.Double.isNaN(point.y)) {
+                            series.hasNaNs++;
+                        }
                         jseries.add(point.x * timeScale, point.y);
+                    }
+                    if (series.hasNaNs > 0) {
+                        jseries.setKey(series.getFullTitle(processorTitle));
+                        System.out.println("NaN Warning: " + jseries.getDescription());
                     }
                     dataset.addSeries(jseries);
                 }

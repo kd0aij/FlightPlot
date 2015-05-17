@@ -11,6 +11,7 @@ public class Series extends ArrayList<XYPoint> {
     private final double skipOut;
     private Double lastTime = null;
     private Double lastValue = null;
+    protected int hasNaNs = 0;
 
     public Series(String title, double skipOut) {
         this.title = title;
@@ -22,7 +23,11 @@ public class Series extends ArrayList<XYPoint> {
     }
 
     public String getFullTitle(String processorTitle) {
-        return processorTitle + (title.isEmpty() ? "" : (":" + title));
+        if (hasNaNs > 0) {
+            return processorTitle + (title.isEmpty() ? "" : (":" + title)) + " NaNs:" + Integer.toString(hasNaNs);
+        } else {
+            return processorTitle + (title.isEmpty() ? "" : (":" + title));
+        }
     }
 
     public void addPoint(double time, double value) {
