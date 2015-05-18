@@ -262,6 +262,7 @@ public class FlightPlot {
                 ProcessorPreset selectedProcessor = (ProcessorPreset) processorsList.getSelectedValue();
                 if (selectedProcessor != null) {
                     selectedProcessor.setVisible(!selectedProcessor.isVisible());
+                    processorsList.repaint();
                     try {
                         generateSeries();
                     } catch (IOException e1) {

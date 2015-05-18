@@ -23,7 +23,6 @@ public class plotListCellRenderer implements ListCellRenderer {
         } else {
             renderer.setBackground(Color.lightGray);
         }
-        paramlist.repaint();
         return renderer;
     }
 }
